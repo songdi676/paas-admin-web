@@ -3,6 +3,14 @@
     <!--工具栏-->
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
+        <el-select v-model="dataSource" size="small" class="filter-item" placeholder="请选择">
+          <el-option
+            v-for="item in dynamicDataSourceList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            @change="changeDataBase"
+          /></el-select>
         <el-input v-model="query.name" clearable size="small" placeholder="请输入表名" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation />
       </div>
@@ -57,11 +65,13 @@
 <script>
 
 import { generator, sync } from '@/api/generator/generator'
+import { getDynamicDataSourceList } from '@/api/mnt/database'
 import { downloadFile } from '@/utils/index'
 import CRUD, { presenter, header } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'GeneratorIndex',
@@ -72,13 +82,32 @@ export default {
   mixins: [presenter(), header()],
   data() {
     return {
+      dynamicDataSourceList: [],
       syncLoading: false
     }
+  },
+  computed: {
+    dataSource: {
+      get() {
+        return this.$store.state.user.dataSource
+      },
+      set(value) {
+        this.$store.dispatch('changeDataSource', value)
+      }
+    }
+  },
+  mounted() {
+    getDynamicDataSourceList().then(res => {
+      this.dynamicDataSourceList = res
+    })
   },
   created() {
     this.crud.optShow = { add: false, edit: false, del: false, download: false }
   },
   methods: {
+    changeDataBase(value) {
+      this.$store.dispatch('changeDataSource', value)
+    },
     toGen(tableName) {
       // 生成代码
       generator(tableName, 0).then(data => {

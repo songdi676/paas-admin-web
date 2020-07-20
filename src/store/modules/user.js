@@ -6,6 +6,7 @@ const user = {
     token: getToken(),
     user: {},
     roles: [],
+    dataSource: null,
     // 第一次加载菜单时用到
     loadMenus: false
   },
@@ -13,6 +14,9 @@ const user = {
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
+    },
+    SET_DATASOURCE: (state, dataSource) => {
+      state.dataSource = dataSource
     },
     SET_USER: (state, user) => {
       state.user = user
@@ -26,6 +30,9 @@ const user = {
   },
 
   actions: {
+    changeDataSource({ commit }, dataSource) {
+      commit('SET_DATASOURCE', dataSource)
+    },
     // 登录
     Login({ commit }, userInfo) {
       const rememberMe = userInfo.rememberMe

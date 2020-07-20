@@ -8,6 +8,13 @@ export function add(data) {
   })
 }
 
+export function getDynamicDataSourceList() {
+  return request({
+    url: 'api/database/dynamic-datasource',
+    method: 'get'
+  })
+}
+
 export function del(ids) {
   return request({
     url: 'api/database',
@@ -32,4 +39,4 @@ export function testDbConnection(data) {
   })
 }
 
-export default { add, edit, del, testDbConnection }
+export default { add, edit, del, testDbConnection, getDynamicDataSourceList }
