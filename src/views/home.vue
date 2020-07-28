@@ -3,7 +3,7 @@
     <div class="dashboard-editor-container">
       <el-row :gutter="8">
         <el-form>
-          <el-col :span="6">
+          <el-col :span="6" style="height: 100px;margin-bottom: 5px;">
             <el-card class="box-card">
               <el-form-item label="迭代周期：">
                 <span>{{ projectCycle.begin+'~'+projectCycle.end }}</span>
@@ -18,7 +18,7 @@
       <el-row :gutter="8">
         <el-form>
           <el-col :span="6">
-            <el-card class="box-card">
+            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
               <el-form-item label="Product：">
                 <el-select v-model="productData" placeholder="请选择Product：" @change="getProductProjectList">
                   <el-option
@@ -32,7 +32,7 @@
             </el-card>
           </el-col>
           <el-col :span="6">
-            <el-card class="box-card">
+            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
               <el-form-item label="Project：">
                 <el-select v-model="projectData" placeholder="请选择Project：" @change="listenProject">
                   <el-option
@@ -46,7 +46,7 @@
             </el-card>
           </el-col>
           <el-col :span="6">
-            <el-card class="box-card">
+            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
               <el-form-item label="Bug：">
                 <template>
                   <el-tag>已解决：{{ bugInfo.resolved }}</el-tag>
@@ -58,7 +58,7 @@
             </el-card>
           </el-col>
           <el-col :span="6">
-            <el-card class="box-card">
+            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
               <el-form-item label="Task：">
                 <template>
                   <el-tag>暂停：{{ taskInfo.pause }}</el-tag>
