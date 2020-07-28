@@ -12,6 +12,10 @@ import 'mavon-editor/dist/css/index.css'
 // 数据字典
 import dict from './components/Dict'
 
+import echarts from 'echarts'
+
+Vue.prototype.$echarts = echarts
+
 // 权限指令
 import permission from './components/Permission'
 import './assets/styles/element-variables.scss'
