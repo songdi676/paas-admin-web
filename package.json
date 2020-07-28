@@ -69,6 +69,7 @@
     "vue-image-crop-upload": "^2.5.0"
   },
   "devDependencies": {
+    "core-js": "^2.6.11",
     "@babel/core": "7.0.0",
     "@babel/register": "7.0.0",
     "@babel/parser": "^7.7.4",
