@@ -3,20 +3,6 @@
     <div class="dashboard-editor-container">
       <el-row :gutter="8">
         <el-form>
-          <el-col :span="6" style="height: 100px;margin-bottom: 5px;">
-            <el-card class="box-card">
-              <el-form-item label="迭代周期：">
-                <span>{{ projectCycle.begin+'~'+projectCycle.end }}</span>
-              </el-form-item>
-            </el-card>
-          </el-col>
-          <el-col />
-          <el-col />
-          <el-col />
-        </el-form>
-      </el-row>
-      <el-row :gutter="8">
-        <el-form>
           <el-col :span="6">
             <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
               <el-form-item label="Product：">
@@ -75,6 +61,36 @@
         </el-form>
       </el-row>
       <el-row :gutter="8">
+        <el-form>
+          <el-col :span="12" style="margin-bottom: 5px;">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <span>迭代周期：{{ projectCycle.begin+'~'+projectCycle.end }}</span>
+              </div>
+              <el-form-item>
+                <echartsPie
+                  v-if="taskTaskTimeInfo.name!==undefined"
+                  :pie-data="taskTaskTimeInfo"
+                />
+              </el-form-item>
+            </el-card>
+          </el-col>
+          <el-col :span="12" style="margin-bottom: 5px;">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <span />
+              </div>
+              <el-form-item>
+                <echartsPie
+                  v-if="taskTaskTimeInfo.name!==undefined"
+                  :pie-data="taskTaskTimeInfo"
+                />
+              </el-form-item>
+            </el-card>
+          </el-col>
+        </el-form>
+      </el-row>
+      <el-row :gutter="8" style="margin-bottom: 5px;">
         <el-col :span="12">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -83,7 +99,6 @@
             <div id="userListChart" :style="{ height: '300px'}" />
           </el-card>
         </el-col>
-
         <el-col :span="12">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -128,6 +143,30 @@
           </el-card>
         </el-col>
       </el-row>
+      <el-row :gutter="8" style="margin-bottom: 5px;">
+        <el-col :span="12">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>{{ pieData.name }}</span>
+            </div>
+            <echartsPie
+              v-if="pieData.name!==undefined"
+              :pie-data="pieData"
+            />
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>任务完成情况</span>
+            </div>
+            <echartsPie
+              v-if="pieData.name!==undefined"
+              :pie-data="pieData"
+            />
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -137,7 +176,12 @@ import { getProjectList, getUserRoleList } from '@/api/zentao/user'
 import { getZtProductList } from '@/api/zentao/product'
 import { getZtProjectList, getProductProjectList, getZtProjectCycle } from '@/api/zentao/project'
 import { getBugInfo } from '@/api/zentao/bug'
-import { getZtTaskInfo } from '@/api/zentao/task'
+import {
+  getZtTaskInfo,
+  getTaskTimeInfo
+} from '@/api/zentao/task'
+
+import echartsPie from '@/components/Echarts/EchartsPie'
 
 const lineChartData = {
   newVisitis: {
@@ -160,6 +204,9 @@ const lineChartData = {
 
 export default {
   name: 'Dashboard',
+  components: {
+    'echartsPie': echartsPie
+  },
   data() {
     return {
       lineChartData: lineChartData.newVisitis,
@@ -171,12 +218,14 @@ export default {
       projectCycle: {},
       projectData: '',
       projectList: [],
+      taskTaskTimeInfo: [],
       pageInfo: {
         'pageNum': 1,
         'pageSize': 10,
         'total': 100
       },
-      form: {}
+      form: {},
+      pieData: {}
     }
   },
   mounted() {
@@ -228,6 +277,9 @@ export default {
           seriesData1.value = item.total
           seriesData.push(seriesData1)
         }
+        this.pieData.legendData = legendData
+        this.pieData.seriesData = seriesData
+        this.pieData.name = '随便写写'
         // 基于准备好的dom，初始化echarts实例
         const myChart = this.$echarts.init(document.getElementById('userListChart'))
         // 绘制图表
@@ -301,12 +353,14 @@ export default {
         this.getBugInfo(productId)
         this.getZtTaskInfo(productId)
         this.getZtProjectCycle(productId)
+        this.getTaskTimeInfo(productId)
       })
     },
     listenProject(projectId) {
       this.getBugInfo(projectId)
       this.getZtTaskInfo(projectId)
       this.getZtProjectCycle(projectId)
+      this.getTaskTimeInfo(projectId)
     },
     getBugInfo(projectId) {
       getBugInfo(projectId).then(res => {
@@ -321,6 +375,11 @@ export default {
     getZtProjectCycle(projectId) {
       getZtProjectCycle(projectId).then(res => {
         this.projectCycle = res.content
+      })
+    },
+    getTaskTimeInfo(projectId) {
+      getTaskTimeInfo(projectId).then(res => {
+        this.taskTaskTimeInfo = res.content
       })
     }
   }
