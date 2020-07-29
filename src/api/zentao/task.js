@@ -88,6 +88,22 @@ export function getUserDeadLine(project, userName) {
   })
 }
 
+/* 获取迭代时间信息*/
+export function getTaskTimeInfo(project) {
+  return request({
+    url: 'zentao/getTaskTimeInfo/' + project,
+    method: 'get'
+  })
+}
+
+/* 获取迭代时间信息*/
+export function getTaskTimeInfoByUserName(project, userName) {
+  return request({
+    url: 'zentao/getTaskTimeInfoByUserName/' + project + '/' + userName,
+    method: 'get'
+  })
+}
+
 export default {
   getZtTaskInfo,
   getEsTimate,
@@ -99,5 +115,7 @@ export default {
   getUserTask,
   getDeadLine,
   getLeft,
-  getConsumed
+  getConsumed,
+  getTaskTimeInfo,
+  getTaskTimeInfoByUserName
 }
