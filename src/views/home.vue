@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-editor-container">
-      <el-row :gutter="8">
-        <el-form>
-          <el-col :span="6">
-            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
-              <el-form-item label="Product：">
-                <el-select v-model="productData" placeholder="请选择Product：" @change="getProductProjectList">
+      <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse-item :title="configTitle" name="1">
+          <el-form>
+            <el-col :span="6">
+              <el-form-item label="产品">
+                <el-select v-model="productId" placeholder="请选择产品" @change="getProductProjectList">
                   <el-option
                     v-for="item in productList"
                     :key="item.id"
@@ -15,12 +15,10 @@
                   />
                 </el-select>
               </el-form-item>
-            </el-card>
-          </el-col>
-          <el-col :span="6">
-            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
-              <el-form-item label="Project：">
-                <el-select v-model="projectData" placeholder="请选择Project：" @change="listenProject">
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="迭代">
+                <el-select v-model="projectId" placeholder="请选择迭代" @change="listenProject">
                   <el-option
                     v-for="item in projectList"
                     :key="item.id"
@@ -29,7 +27,14 @@
                   />
                 </el-select>
               </el-form-item>
-            </el-card>
+            </el-col>
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
+      <el-row :gutter="8">
+        <el-form>
+          <el-col :span="6">
+            <dataBox :option="dataBoxOption" />
           </el-col>
           <el-col :span="6">
             <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
@@ -181,6 +186,7 @@ import {
   getTaskTimeInfo
 } from '@/api/zentao/task'
 
+import dataBox from '@/components/DataBox'
 import echartsPie from '@/components/Echarts/EchartsPie'
 
 const lineChartData = {
@@ -205,18 +211,42 @@ const lineChartData = {
 export default {
   name: 'Dashboard',
   components: {
-    'echartsPie': echartsPie
+    'echartsPie': echartsPie,
+    'dataBox': dataBox
   },
   data() {
     return {
+      configTitle: '选择产品和迭代',
+      dataBoxOption: {
+        span: 12,
+        data: [
+          {
+            click: function(item) {
+              alert(JSON.stringify(item))
+            },
+            title: 'BUG数量',
+            count: 12332,
+            icon: 'el-icon-warning',
+            color: 'rgb(49, 180, 141)',
+            target: '_blank',
+            subData: [{
+              title: '较昨日',
+              value: '+12'
+            }, {
+              title: '较上迭代',
+              value: '+120'
+            }]
+          }] },
       lineChartData: lineChartData.newVisitis,
       userList: [],
-      productData: '',
+      productId: '',
+      productName: '',
       productList: [],
       bugInfo: {},
       taskInfo: {},
       projectCycle: {},
-      projectData: '',
+      projectId: '',
+      projectName: '',
       projectList: [],
       taskTaskTimeInfo: [],
       pageInfo: {
@@ -326,7 +356,8 @@ export default {
       }
       getZtProductList(data).then(res => {
         this.productList = res.content
-        this.productData = this.productList[0].name
+        this.productId = this.productList[0].id
+        this.productName = this.productList[0].name
         this.getProductProjectList(this.productList[0].id)
       })
     },
@@ -349,7 +380,8 @@ export default {
       }
       getProductProjectList(data).then(res => {
         this.projectList = res.content
-        this.projectData = this.projectList[0].name
+        this.projectId = this.projectList[0].id
+        this.projectName = this.projectList[0].name
         this.getBugInfo(productId)
         this.getZtTaskInfo(productId)
         this.getZtProjectCycle(productId)

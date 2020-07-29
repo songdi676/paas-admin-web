@@ -5,6 +5,9 @@ import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css'
 
 import Element from 'element-ui'
+import Avue from '@smallwei/avue'
+import '@smallwei/avue/lib/index.css'
+Vue.use(Avue)
 //
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
