@@ -86,105 +86,98 @@
           <el-col :span="12" style="margin-bottom: 5px;">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
-                <span />
+                <span>任务情况</span>
               </div>
-              <el-form-item>
-                <echartsPie
-                  v-if="taskTaskTimeInfo.name!==undefined"
-                  :pie-data="taskTaskTimeInfo"
-                />
-              </el-form-item>
+              <PieChart2
+                v-if="ztTaskInfo !== undefined || ztTaskInfo !== null"
+                :pie-data="ztTaskInfo"
+              />
             </el-card>
           </el-col>
         </el-form>
       </el-row>
       <el-row :gutter="8" style="margin-bottom: 5px;">
-        <el-col :span="12">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>人员分布</span>
-            </div>
-            <div id="userListChart" :style="{ height: '300px'}" />
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>员工列表</span>
-            </div>
-            <template>
-              <el-table
-                :data="userList"
-                style="width: 100%"
-                height="268"
-                border
-              >
-                <el-table-column
-                  prop="account"
-                  label="账号"
-                />
-                <el-table-column
-                  prop="role"
-                  label="角色"
-                />
-                <el-table-column
-                  prop="realname"
-                  label="姓名"
-                />
-                <el-table-column
-                  prop="email"
-                  label="邮箱"
-                  width="200px"
-                />
-              </el-table>
-              <div class="block">
-                <el-pagination
-                  :page-sizes="[10, 20, 50, 100]"
-                  :page-size="pageInfo.size"
-                  layout="sizes, prev, pager, next"
-                  :total="pageInfo.total"
-                  @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange"
-                />
+        <el-form>
+          <el-col :span="12">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <span>人员分布</span>
               </div>
-            </template>
-          </el-card>
-        </el-col>
+              <PieChart
+                v-if="pieData.name!==undefined"
+                :pie-data="pieData"
+              />
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <el-form-item label="员工列表">
+                  <el-select v-model="productId" placeholder="请选择分组" @change="listenGetUserData">
+                    <el-option
+                      v-for="item in ztDeptInfo"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    />
+                  </el-select>
+                </el-form-item>
+              </div>
+              <template>
+                <el-table
+                  :data="userList"
+                  style="width: 100%"
+                  height="268"
+                  border
+                >
+                  <el-table-column
+                    prop="account"
+                    label="账号"
+                  />
+                  <el-table-column
+                    prop="role"
+                    label="角色"
+                  />
+                  <el-table-column
+                    prop="realname"
+                    label="姓名"
+                  />
+                  <el-table-column
+                    prop="email"
+                    label="邮箱"
+                    width="200px"
+                  />
+                </el-table>
+                <div class="block">
+                  <el-pagination
+                    :page-sizes="[10, 20, 50, 100]"
+                    :page-size="pageInfo.size"
+                    layout="sizes, prev, pager, next"
+                    :total="pageInfo.total"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                  />
+                </div>
+              </template>
+            </el-card>
+          </el-col>
+        </el-form>
       </el-row>
-      <el-row :gutter="8" style="margin-bottom: 5px;">
-        <el-col :span="12">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>{{ pieData.name }}</span>
-            </div>
-            <echartsPie
-              v-if="pieData.name!==undefined"
-              :pie-data="pieData"
-            />
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>任务完成情况</span>
-            </div>
-            <echartsPie
-              v-if="pieData.name!==undefined"
-              :pie-data="pieData"
-            />
-          </el-card>
-        </el-col>
+      <el-row>
+        <el-col :span="24" />
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
-import { getProjectList, getUserRoleList } from '@/api/zentao/user'
+import { getDeptInfo } from '@/api/zentao/dept'
+import { getUserList, getUserRoleList } from '@/api/zentao/user'
 import { getZtProductList } from '@/api/zentao/product'
 import { getZtProjectList, getProductProjectList, getZtProjectCycle } from '@/api/zentao/project'
 import { getBugInfo } from '@/api/zentao/bug'
 import {
+  getTaskInfo,
   getZtTaskInfo,
   getTaskTimeInfo
 } from '@/api/zentao/task'
@@ -192,6 +185,8 @@ import {
 import dataBox from '@/components/DataBox'
 import echartsPie from '@/components/Echarts/EchartsPie'
 import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
+import PieChart from '@/components/Echarts/PieChart'
+import PieChart2 from '@/components/Echarts/PieChart2'
 
 const lineChartData = {
   newVisitis: {
@@ -217,7 +212,9 @@ export default {
   components: {
     'echartsPie': echartsPie,
     'dataBox': dataBox,
-    'DynamicDataSourceSelect': DynamicDataSourceSelect
+    'DynamicDataSourceSelect': DynamicDataSourceSelect,
+    'PieChart': PieChart,
+    'PieChart2': PieChart2
   },
   data() {
     return {
@@ -280,9 +277,11 @@ export default {
               title: '较上迭代',
               value: '+120'
             }]
-          }] },
+          }]
+      },
       lineChartData: lineChartData.newVisitis,
       userList: [],
+      userInfo: {},
       productId: '',
       productName: '',
       productList: [],
@@ -292,6 +291,8 @@ export default {
       projectId: '',
       projectName: '',
       projectList: [],
+      ztTaskInfo: [],
+      ztDeptInfo: [],
       taskTaskTimeInfo: [],
       pageInfo: {
         'pageNum': 1,
@@ -303,13 +304,13 @@ export default {
     }
   },
   mounted() {
-
+    this.getDeptInfo()
   },
   methods: {
     changeDataSource() {
       var data1 = {
-        'params': {},
-        'pageInfo': {}
+        'params': this.userInfo,
+        'pageInfo': this.pageInfo
       }
       this.getUserData(data1)
       this.drawLine()
@@ -318,8 +319,19 @@ export default {
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
     },
+    listenGetUserData(val) {
+      this.userInfo.dept = val
+      const data = {
+        'params': this.userInfo,
+        pageInfo: this.pageInfo
+      }
+      getUserList(data).then(res => {
+        this.userList = res.content
+        this.pageInfo = res.pageInfo
+      })
+    },
     getUserData(data) {
-      getProjectList(data).then(res => {
+      getUserList(data).then(res => {
         this.userList = res.content
         this.pageInfo = res.pageInfo
       })
@@ -327,7 +339,7 @@ export default {
     handleSizeChange(val) {
       this.pageInfo.pageSize = val
       var reqData = {
-        'params': {},
+        'params': this.userInfo,
         'pageInfo': this.pageInfo
       }
       this.getUserData(reqData)
@@ -335,7 +347,7 @@ export default {
     handleCurrentChange(val) {
       this.pageInfo.pageNum = val
       var reqData = {
-        params: {},
+        params: this.userInfo,
         pageInfo: this.pageInfo
       }
       this.getUserData(reqData)
@@ -357,43 +369,6 @@ export default {
         this.pieData.legendData = legendData
         this.pieData.seriesData = seriesData
         this.pieData.name = '随便写写'
-        // 基于准备好的dom，初始化echarts实例
-        const myChart = this.$echarts.init(document.getElementById('userListChart'))
-        // 绘制图表
-        myChart.setOption({
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c} ({d}%)'
-          },
-          legend: {
-            orient: 'vertical',
-            left: 10,
-            data: legendData
-          },
-          series: [
-            {
-              name: '职位分布',
-              type: 'pie',
-              radius: ['50%', '70%'],
-              avoidLabelOverlap: false,
-              label: {
-                show: false,
-                position: 'center'
-              },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: '30',
-                  fontWeight: 'bold'
-                }
-              },
-              labelLine: {
-                show: false
-              },
-              data: seriesData
-            }
-          ]
-        })
       })
     },
     getZtProductList() {
@@ -417,9 +392,9 @@ export default {
         this.projectList = res.content
       })
     },
-    getProductProjectList(productId) {
+    getProductProjectList(projectId) {
       const data = {
-        params: productId,
+        params: projectId,
         pageInfo: {
           'pageNum': 1,
           'pageSize': 9999999
@@ -429,10 +404,11 @@ export default {
         this.projectList = res.content
         this.projectId = this.projectList[0].id
         this.projectName = this.projectList[0].name
-        this.getBugInfo(productId)
-        this.getZtTaskInfo(productId)
-        this.getZtProjectCycle(productId)
-        this.getTaskTimeInfo(productId)
+        this.getBugInfo(projectId)
+        this.getZtTaskInfo(projectId)
+        this.getZtProjectCycle(projectId)
+        this.getTaskTimeInfo(projectId)
+        this.getTaskInfo(projectId)
       })
     },
     listenProject(projectId) {
@@ -440,6 +416,7 @@ export default {
       this.getZtTaskInfo(projectId)
       this.getZtProjectCycle(projectId)
       this.getTaskTimeInfo(projectId)
+      this.getTaskInfo(projectId)
     },
     getBugInfo(projectId) {
       getBugInfo(projectId).then(res => {
@@ -459,6 +436,16 @@ export default {
     getTaskTimeInfo(projectId) {
       getTaskTimeInfo(projectId).then(res => {
         this.taskTaskTimeInfo = res.content
+      })
+    },
+    getTaskInfo(projectId) {
+      getTaskInfo(projectId).then(res => {
+        this.ztTaskInfo = res.content
+      })
+    },
+    getDeptInfo() {
+      getDeptInfo().then(res => {
+        this.ztDeptInfo = res.content
       })
     }
   }
