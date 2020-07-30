@@ -6,7 +6,7 @@ const user = {
     token: getToken(),
     user: {},
     roles: [],
-    dataSource: null,
+    dataSource: {},
     // 第一次加载菜单时用到
     loadMenus: false
   },
@@ -15,8 +15,10 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_DATASOURCE: (state, dataSource) => {
-      state.dataSource = dataSource
+    SET_DATASOURCE: (state, dataSourceMap) => {
+      if (dataSourceMap) {
+        state.dataSource[dataSourceMap.system] = dataSourceMap
+      }
     },
     SET_USER: (state, user) => {
       state.user = user

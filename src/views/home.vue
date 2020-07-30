@@ -5,7 +5,7 @@
         <el-collapse-item :title="configTitle" name="1">
           <el-form>
             <el-col :span="4">
-              <DynamicDataSourceSelect type="zentao" @changeDataSource="changeDataSource" />
+              <DynamicDataSourceSelect system="zentao" @changeDataSource="changeDataSource" />
             </el-col>
             <el-col :span="4">
               <el-form-item label="产品">

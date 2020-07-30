@@ -20,7 +20,13 @@ service.interceptors.request.use(
       config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     config.headers['Content-Type'] = 'application/json'
-    config.headers['DataSource'] = store.state.user.dataSource
+    const dataSourceMap = store.state.user.dataSource
+    for (const key in dataSourceMap) {
+      if (dataSourceMap.hasOwnProperty(key)) {
+        const element = dataSourceMap[key]
+        config.headers[element.system + 'DataSource'] = element.dataSource
+      }
+    }
 
     return config
   },

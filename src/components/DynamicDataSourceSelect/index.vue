@@ -14,13 +14,17 @@ import { getDynamicDataSourceList } from '@/api/mnt/database'
 export default {
   name: 'DynamicDataSourceSelect',
   props: {
-    type: {
+    system: {
       type: String,
       default: 'admin'
     }
   },
   data() {
     return {
+      dataSourceMap: {
+        system: this.system,
+        dataSource: ''
+      },
       dynamicDataSourceList: []
     }
   },
@@ -30,25 +34,31 @@ export default {
         return this.$store.state.user.dataSource
       },
       set(value) {
-        this.$store.dispatch('changeDataSource', value)
-        this.$emit('changeDataSource', value)
+        this.dataSourceMap.dataSource = value
+        this.dataSourceMap.system = this.system
+        this.$store.dispatch('changeDataSource', this.dataSourceMap)
+        this.$emit('changeDataSource', this.dataSourceMap)
       }
     }
   },
   created() {
-    getDynamicDataSourceList(this.type).then(res => {
+    getDynamicDataSourceList(this.system).then(res => {
       this.dynamicDataSourceList = res
       if (res.length > 0) {
-        this.$store.dispatch('changeDataSource', res[0].value)
-        this.$emit('changeDataSource', res[0].value)
+        this.dataSourceMap.dataSource = res[0].value
+        this.dataSourceMap.system = this.system
+        this.$store.dispatch('changeDataSource', this.dataSourceMap)
+        this.$emit('changeDataSource', this.dataSourceMap)
       }
     })
   },
 
   methods: {
     changeDataBase(value) {
-      this.$store.dispatch('changeDataSource', value)
-      this.$emit('changeDataSource', value)
+      this.dataSourceMap.dataSource = value
+      this.dataSourceMap.system = this.system
+      this.$store.dispatch('changeDataSource', this.dataSourceMap)
+      this.$emit('changeDataSource', this.dataSourceMap)
     }
   }
 }
