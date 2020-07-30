@@ -293,6 +293,16 @@ export default {
       return dataBoxOption
     }
   },
+  watch: {
+    'taskTaskTimeInfo': function() {
+      this.dataBoxOption.data[1].count = this.taskTaskTimeInfo.seriesData[1].value
+      this.dataBoxOption.data[1].subData[0] = this.taskTaskTimeInfo.seriesData[2].value
+      this.dataBoxOption.data[1].subData[1] = this.taskTaskTimeInfo.seriesData[2].value
+    },
+    'userList': function() {
+      this.dataBoxOption.data[0].count = this.pageInfo.total
+    }
+  },
   mounted() {
     this.getDeptInfo()
   },
@@ -302,7 +312,6 @@ export default {
         'params': this.userInfo,
         'pageInfo': this.pageInfo
       }
-
       this.getUserData(data1)
       this.drawLine()
       this.getZtProductList()
@@ -408,10 +417,11 @@ export default {
         this.projectList = res.content
         this.projectId = this.projectList[0].id
         this.projectName = this.projectList[0].name
-        this.getBugInfo(productId)
-        this.getZtTaskInfo(productId)
-        this.getZtProjectCycle(productId)
-        this.getTaskTimeInfo(productId)
+        this.getBugInfo(projectId)
+        this.getZtTaskInfo(projectId)
+        this.getZtProjectCycle(projectId)
+        this.getTaskTimeInfo(projectId)
+        this.getTaskInfo(projectId)
         this.getDataBox(this.projectId)
       })
     },
@@ -420,6 +430,7 @@ export default {
       this.getZtTaskInfo(projectId)
       this.getZtProjectCycle(projectId)
       this.getTaskTimeInfo(projectId)
+      this.getTaskInfo(projectId)
       this.getDataBox(projectId)
     },
     getBugInfo(projectId) {
