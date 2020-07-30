@@ -1,5 +1,5 @@
 <template>
-  <div id="pieChart" :class="className" :style="{ height: '300px'}" />
+  <div :class="className" :style="{height:height,width:width}" />
 </template>
 
 <script>
@@ -11,7 +11,7 @@ import { debounce } from '@/utils'
 export default {
   props: {
     pieData: {
-      type: Object,
+      type: Array,
       required: true
     },
     className: {
@@ -56,43 +56,40 @@ export default {
   },
   methods: {
     initChart() {
-      // 基于准备好的dom，初始化echarts实例
-      this.chart = echarts.init(this.$el, 'macarons')
-      // 绘制图表
-      this.chart.setOption({
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 10,
-          data: this.pieData.legendData
-        },
-        series: [
-          {
-            name: this.pieData.name,
-            type: 'pie',
-            radius: ['50%', '70%'],
-            avoidLabelOverlap: false,
-            label: {
-              show: false,
-              position: 'center'
-            },
-            emphasis: {
+      if (this.pieData != null || this.pieData !== undefined) {
+        this.chart = echarts.init(this.$el, 'macarons')
+        this.chart.setOption({
+          series: [
+            {
+              name: '访问来源',
+              type: 'pie',
+              radius: '80%',
+              data: this.pieData,
+              roseType: 'angle',
               label: {
-                show: true,
-                fontSize: '30',
-                fontWeight: 'bold'
+                normal: {
+                  textStyle: {
+                    color: 'rgba(0, 0, 0, 0.7)'
+                  }
+                }
+              },
+              labelLine: {
+                normal: {
+                  lineStyle: {
+                    color: 'rgba(70, 70, 0, 0.3)'
+                  }
+                }
+              },
+              itemStyle: {
+                normal: {
+                  shadowBlur: 200,
+                  shadowColor: 'rgba(255, 255, 255, 0.3)'
+                }
               }
-            },
-            labelLine: {
-              show: true
-            },
-            data: this.pieData.seriesData
-          }
-        ]
-      })
+            }
+          ]
+        })
+      }
     }
   }
 }
