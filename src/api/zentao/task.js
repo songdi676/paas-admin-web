@@ -1,5 +1,25 @@
 import request from '@/utils/request'
+import qs from 'qs'
 
+export function getTaskList(zttask) {
+  return request({
+    url: '/zentao/task' + '?' + qs.stringify(zttask, { indices: false }),
+    method: 'get'
+  })
+}
+
+export function getTaskStatus(zttask) {
+  return request({
+    url: '/zentao/task/status' + '?' + qs.stringify(zttask, { indices: false }),
+    method: 'get'
+  })
+}
+export function getTaskDataBox(zttask) {
+  return request({
+    url: '/zentao/task/data-box' + '?' + qs.stringify(zttask, { indices: false }),
+    method: 'get'
+  })
+}
 /* 获取迭代里任务分类总数*/
 export function getZtTaskInfo(project) {
   return request({
@@ -117,5 +137,8 @@ export default {
   getLeft,
   getConsumed,
   getTaskTimeInfo,
-  getTaskTimeInfoByUserName
+  getTaskTimeInfoByUserName,
+  getTaskList,
+  getTaskStatus,
+  getTaskDataBox
 }

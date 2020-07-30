@@ -183,34 +183,16 @@
 import { getProjectList, getUserRoleList } from '@/api/zentao/user'
 import { getZtProductList } from '@/api/zentao/product'
 import { getZtProjectList, getProductProjectList, getZtProjectCycle } from '@/api/zentao/project'
-import { getBugInfo } from '@/api/zentao/bug'
+import { getBugInfo, getBugDataBox } from '@/api/zentao/bug'
 import {
   getZtTaskInfo,
-  getTaskTimeInfo
+  getTaskTimeInfo,
+  getTaskDataBox
 } from '@/api/zentao/task'
 
 import dataBox from '@/components/DataBox'
 import echartsPie from '@/components/Echarts/EchartsPie'
 import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
 
 export default {
   name: 'Dashboard',
@@ -219,69 +201,68 @@ export default {
     'dataBox': dataBox,
     'DynamicDataSourceSelect': DynamicDataSourceSelect
   },
+  // 数据字典
+  dicts: ['task_status', 'bug_status'],
   data() {
     return {
       configTitle: '选择产品和迭代',
-      dataBoxOption: {
-        span: 6,
-        data: [
-          {
-            title: '成员数',
-            count: 12332,
-            showIcon: false,
-            icon: 'el-icon-warning',
-            color: 'rgb(49, 180, 141)',
-            subData: [{
-              title: '较昨日',
-              value: '+12'
-            }, {
-              title: '较上迭代',
-              value: '+120'
-            }]
-          },
-          {
-            title: '工时',
-            count: 12332,
-            showIcon: false,
-            icon: 'el-icon-warning',
-            color: 'rgb(49, 180, 141)',
-            subData: [{
-              title: '较昨日',
-              value: '+12'
-            }, {
-              title: '较上迭代',
-              value: '+120'
-            }]
-          },
-          {
-            title: '任务数量',
-            count: 12332,
-            showIcon: false,
-            icon: 'el-icon-warning',
-            color: 'rgb(49, 180, 141)',
-            subData: [{
-              title: '较昨日',
-              value: '+12'
-            }, {
-              title: '较上迭代',
-              value: '+120'
-            }]
-          },
-          {
-            title: 'BUG数量',
-            count: 12332,
-            showIcon: false,
-            icon: 'el-icon-warning',
-            color: 'rgb(49, 180, 141)',
-            subData: [{
-              title: '较昨日',
-              value: '+12'
-            }, {
-              title: '较上迭代',
-              value: '+120'
-            }]
-          }] },
-      lineChartData: lineChartData.newVisitis,
+
+      userDataBox: {
+        title: '成员数',
+        count: 12332,
+        showIcon: false,
+        icon: 'el-icon-warning',
+        color: 'rgb(49, 180, 141)',
+        subData: [{
+          title: '较昨日',
+          value: '+12'
+        }, {
+          title: '较上迭代',
+          value: '+120'
+        }]
+      },
+      timeDataBox: {
+        title: '工时',
+        count: 12332,
+        showIcon: false,
+        icon: 'el-icon-warning',
+        color: 'rgb(49, 180, 141)',
+        subData: [{
+          title: '较昨日',
+          value: '+12'
+        }, {
+          title: '较上迭代',
+          value: '+120'
+        }]
+      },
+      taskDataBox: {
+        title: '任务数量',
+        count: 0,
+        showIcon: false,
+        icon: 'el-icon-warning',
+        color: 'rgb(49, 180, 141)',
+        subData: [{
+          title: '较昨日',
+          value: '+12'
+        }, {
+          title: '较上迭代',
+          value: '+120'
+        }]
+      },
+      bugDataBox: {
+        title: 'BUG数量',
+        count: 0,
+        showIcon: false,
+        icon: 'el-icon-warning',
+        color: 'rgb(49, 180, 141)',
+        subData: [{
+          title: '较昨日',
+          value: '+12'
+        }, {
+          title: '较上迭代',
+          value: '+120'
+        }]
+      },
       userList: [],
       productId: '',
       productName: '',
@@ -302,6 +283,16 @@ export default {
       pieData: {}
     }
   },
+  computed: {
+    // 仅读取
+    dataBoxOption: function() {
+      var dataBoxOption = {
+        span: 6,
+        data: [this.userDataBox, this.timeDataBox, this.taskDataBox, this.bugDataBox]
+      }
+      return dataBoxOption
+    }
+  },
   mounted() {
 
   },
@@ -311,12 +302,26 @@ export default {
         'params': {},
         'pageInfo': {}
       }
+
       this.getUserData(data1)
       this.drawLine()
       this.getZtProductList()
     },
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+
+    getDataBox(projectId) {
+      var query = {
+        'project': projectId
+      }
+      getBugDataBox(query).then(res => {
+        this.bugDataBox = { ...res }
+        this.bugDataBox.dict = this.dict.label.bug_status
+        this.bugDataBox.color = 'rgb(49, 180, 141)'
+      })
+      getTaskDataBox(query).then(res => {
+        this.taskDataBox = { ...res }
+        this.taskDataBox.dict = this.dict.label.task_status
+        this.taskDataBox.color = 'rgb(49, 180, 141)'
+      })
     },
     getUserData(data) {
       getProjectList(data).then(res => {
@@ -433,6 +438,7 @@ export default {
         this.getZtTaskInfo(productId)
         this.getZtProjectCycle(productId)
         this.getTaskTimeInfo(productId)
+        this.getDataBox(this.projectId)
       })
     },
     listenProject(projectId) {
@@ -440,6 +446,7 @@ export default {
       this.getZtTaskInfo(projectId)
       this.getZtProjectCycle(projectId)
       this.getTaskTimeInfo(projectId)
+      this.getDataBox(projectId)
     },
     getBugInfo(projectId) {
       getBugInfo(projectId).then(res => {

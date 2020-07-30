@@ -29,8 +29,9 @@
                 :end="item.count"
               />
               <div class="data-box-title">{{ item.title }}</div>
-              <div v-for="(subItem,subIndex) in item.subData" :key="subIndex+'sub'" class="info">
-                <span>{{ subItem.title }}</span>
+              <div v-for="(subItem,subIndex) in item.subData.slice(0, 2)" :key="subIndex+'sub'" class="info">
+                <span v-if="!item.dict">{{ subItem.title }}</span>
+                <span v-if="item.dict">{{ item.dict[subItem.title ] }}</span>
                 <span :style="{color:item.color}">{{ subItem.value }}</span>
               </div>
             </div>
@@ -67,7 +68,11 @@ export default {
   watch: {},
   created() { },
   mounted() { },
-  methods: {}
+  methods: {
+    filter(array) {
+      return array.slice(0, 2)
+    }
+  }
 }
 </script>
 <style scoped>
