@@ -1,10 +1,13 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-editor-container">
-      <el-collapse v-model="activeNames" @change="handleChange">
+      <el-collapse>
         <el-collapse-item :title="configTitle" name="1">
           <el-form>
-            <el-col :span="6">
+            <el-col :span="4">
+              <DynamicDataSourceSelect type="zentao" @changeDataSource="changeDataSource" />
+            </el-col>
+            <el-col :span="4">
               <el-form-item label="产品">
                 <el-select v-model="productId" placeholder="请选择产品" @change="getProductProjectList">
                   <el-option
@@ -16,7 +19,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="4">
               <el-form-item label="迭代">
                 <el-select v-model="projectId" placeholder="请选择迭代" @change="listenProject">
                   <el-option
@@ -188,6 +191,7 @@ import {
 
 import dataBox from '@/components/DataBox'
 import echartsPie from '@/components/Echarts/EchartsPie'
+import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
 
 const lineChartData = {
   newVisitis: {
@@ -212,7 +216,8 @@ export default {
   name: 'Dashboard',
   components: {
     'echartsPie': echartsPie,
-    'dataBox': dataBox
+    'dataBox': dataBox,
+    'DynamicDataSourceSelect': DynamicDataSourceSelect
   },
   data() {
     return {
@@ -298,15 +303,18 @@ export default {
     }
   },
   mounted() {
-    var data1 = {
-      'params': {},
-      'pageInfo': {}
-    }
-    this.getUserData(data1)
-    this.drawLine()
-    this.getZtProductList()
+
   },
   methods: {
+    changeDataSource() {
+      var data1 = {
+        'params': {},
+        'pageInfo': {}
+      }
+      this.getUserData(data1)
+      this.drawLine()
+      this.getZtProductList()
+    },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
     },

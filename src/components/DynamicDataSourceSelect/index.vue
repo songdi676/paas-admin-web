@@ -13,7 +13,12 @@ import { getDynamicDataSourceList } from '@/api/mnt/database'
 
 export default {
   name: 'DynamicDataSourceSelect',
-
+  props: {
+    type: {
+      type: String,
+      default: 'admin'
+    }
+  },
   data() {
     return {
       dynamicDataSourceList: []
@@ -26,18 +31,24 @@ export default {
       },
       set(value) {
         this.$store.dispatch('changeDataSource', value)
+        this.$emit('changeDataSource', value)
       }
     }
   },
-  mounted() {
-    getDynamicDataSourceList().then(res => {
+  created() {
+    getDynamicDataSourceList(this.type).then(res => {
       this.dynamicDataSourceList = res
+      if (res.length > 0) {
+        this.$store.dispatch('changeDataSource', res[0].value)
+        this.$emit('changeDataSource', res[0].value)
+      }
     })
   },
 
   methods: {
     changeDataBase(value) {
       this.$store.dispatch('changeDataSource', value)
+      this.$emit('changeDataSource', value)
     }
   }
 }

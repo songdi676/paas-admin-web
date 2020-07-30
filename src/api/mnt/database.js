@@ -8,9 +8,9 @@ export function add(data) {
   })
 }
 
-export function getDynamicDataSourceList() {
+export function getDynamicDataSourceList(type) {
   return request({
-    url: 'api/database/dynamic-datasource',
+    url: `api/database/dynamic-datasource?type=${type}`,
     method: 'get'
   })
 }
