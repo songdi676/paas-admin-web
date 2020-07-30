@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getProjectList(data) {
+export function getUserList(data) {
   return request({
     url: 'zentao/getUserList',
     method: 'post',
@@ -15,4 +15,4 @@ export function getUserRoleList() {
   })
 }
 
-export default { getProjectList, getUserRoleList }
+export default { getUserList, getUserRoleList }

@@ -9,6 +9,10 @@ import { debounce } from '@/utils'
 
 export default {
   props: {
+    pieData: {
+      type: Object,
+      required: true
+    },
     className: {
       type: String,
       default: 'chart'
@@ -25,6 +29,11 @@ export default {
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    'pieData': function() {
+      this.initChart()
     }
   },
   mounted() {
@@ -51,30 +60,34 @@ export default {
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         legend: {
-          left: 'center',
-          bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          orient: 'vertical',
+          left: 10,
+          data: this.pieData.legendData
         },
-        calculable: true,
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: this.pieData.name,
             type: 'pie',
-            roseType: 'radius',
-            radius: [15, 95],
-            center: ['50%', '38%'],
-            data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
-            ],
-            animationEasing: 'cubicInOut',
-            animationDuration: 2600
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '30',
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: this.pieData.seriesData
           }
         ]
       })
