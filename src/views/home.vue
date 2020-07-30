@@ -33,7 +33,7 @@
       </el-collapse>
       <el-row :gutter="8">
         <el-form>
-          <el-col :span="6">
+          <el-col :span="12">
             <dataBox :option="dataBoxOption" />
           </el-col>
           <el-col :span="6">
@@ -218,17 +218,56 @@ export default {
     return {
       configTitle: '选择产品和迭代',
       dataBoxOption: {
-        span: 12,
+        span: 6,
         data: [
           {
-            click: function(item) {
-              alert(JSON.stringify(item))
-            },
-            title: 'BUG数量',
+            title: '成员数',
             count: 12332,
+            showIcon: false,
             icon: 'el-icon-warning',
             color: 'rgb(49, 180, 141)',
-            target: '_blank',
+            subData: [{
+              title: '较昨日',
+              value: '+12'
+            }, {
+              title: '较上迭代',
+              value: '+120'
+            }]
+          },
+          {
+            title: '工时',
+            count: 12332,
+            showIcon: false,
+            icon: 'el-icon-warning',
+            color: 'rgb(49, 180, 141)',
+            subData: [{
+              title: '较昨日',
+              value: '+12'
+            }, {
+              title: '较上迭代',
+              value: '+120'
+            }]
+          },
+          {
+            title: '任务数量',
+            count: 12332,
+            showIcon: false,
+            icon: 'el-icon-warning',
+            color: 'rgb(49, 180, 141)',
+            subData: [{
+              title: '较昨日',
+              value: '+12'
+            }, {
+              title: '较上迭代',
+              value: '+120'
+            }]
+          },
+          {
+            title: 'BUG数量',
+            count: 12332,
+            showIcon: false,
+            icon: 'el-icon-warning',
+            color: 'rgb(49, 180, 141)',
             subData: [{
               title: '较昨日',
               value: '+12'
