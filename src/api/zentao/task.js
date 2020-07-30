@@ -1,6 +1,14 @@
 import request from '@/utils/request'
 
 /* 获取迭代里任务分类总数*/
+export function getTaskInfo(project) {
+  return request({
+    url: 'zentao/getTaskInfo/' + project,
+    method: 'get'
+  })
+}
+
+/* 获取迭代里任务分类总数*/
 export function getZtTaskInfo(project) {
   return request({
     url: 'zentao/getZtTaskInfo/' + project,
@@ -105,6 +113,7 @@ export function getTaskTimeInfoByUserName(project, userName) {
 }
 
 export default {
+  getTaskInfo,
   getZtTaskInfo,
   getEsTimate,
   getUserDeadLine,
