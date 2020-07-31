@@ -1,15 +1,28 @@
 <template>
-  <el-row :gutter="8">
-    <dataBox :option="dataBoxOption" />
+  <div>
+    <el-collapse>
+      <el-collapse-item :title="configTitle" name="1">
+        <el-col :span="8">
+          <DynamicDataSourceSelect system="sonar" @changeDataSource="changeDataSource" />
+        </el-col>
 
-  </el-row>
+      </el-collapse-item>
+    </el-collapse>
+
+    <el-row :gutter="8">
+      <dataBox :option="dataBoxOption" />
+
+    </el-row>
+  </div>
 </template>
 <script>
 import dataBox from '@/components/DataBox'
+import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
 export default {
   name: 'SonarDashboard',
   components: {
-    'dataBox': dataBox
+    'dataBox': dataBox,
+    'DynamicDataSourceSelect': DynamicDataSourceSelect
   },
   props: {
     system: {
@@ -19,6 +32,7 @@ export default {
   },
   data() {
     return {
+      configTitle: '选择数据库',
       codeSmellDataBox: {
         title: 'Sonar异味',
         count: 12332,

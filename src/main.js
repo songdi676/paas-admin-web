@@ -18,7 +18,8 @@ import dict from './components/Dict'
 import echarts from 'echarts'
 
 Vue.prototype.$echarts = echarts
-
+import eventBus from '@/utils/eventBus'
+Vue.prototype.$eventBus = eventBus
 // 权限指令
 import permission from './components/Permission'
 import './assets/styles/element-variables.scss'
