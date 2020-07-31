@@ -34,43 +34,11 @@
           </el-form>
         </el-collapse-item>
       </el-collapse>
-      <el-row :gutter="8">
-        <el-col :span="12">
+      <el-col :span="12" name="禅道看板">
+        <el-row :gutter="8">
           <dataBox :option="dataBoxOption" />
-        </el-col>
-        <el-form>
-
-          <el-col :span="6">
-            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
-              <el-form-item label="Bug：">
-                <template>
-                  <el-tag>已解决：{{ bugInfo.resolved }}</el-tag>
-                  <el-tag>活跃：{{ bugInfo.active }}</el-tag>
-                  <el-tag>关闭：{{ bugInfo.closed }}</el-tag>
-                  <el-tag>总数：{{ bugInfo.total }}</el-tag>
-                </template>
-              </el-form-item>
-            </el-card>
-          </el-col>
-          <el-col :span="6">
-            <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
-              <el-form-item label="Task：">
-                <template>
-                  <el-tag>暂停：{{ taskInfo.pause }}</el-tag>
-                  <el-tag>完成：{{ taskInfo.done }}</el-tag>
-                  <el-tag>关闭：{{ taskInfo.closed }}</el-tag>
-                  <el-tag>进行中：{{ taskInfo.doing }}</el-tag>
-                  <el-tag>等待：{{ taskInfo.wait }}</el-tag>
-                  <el-tag>取消：{{ taskInfo.cancel }}</el-tag>
-                  <el-tag>总数：{{ taskInfo.total }}</el-tag>
-                </template>
-              </el-form-item>
-            </el-card>
-          </el-col>
-        </el-form>
-      </el-row>
-      <el-row :gutter="8">
-        <el-form>
+        </el-row>
+        <el-row :gutter="8">
           <el-col :span="12" style="margin-bottom: 5px;">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
@@ -95,75 +63,78 @@
               />
             </el-card>
           </el-col>
-        </el-form>
-      </el-row>
-      <el-row :gutter="8" style="margin-bottom: 5px;">
-        <el-form>
-          <el-col :span="12">
-            <el-card class="box-card">
-              <div slot="header" class="clearfix">
-                <span>人员分布</span>
-              </div>
-              <PieChart
-                v-if="pieData.name!==undefined"
-                :pie-data="pieData"
-              />
-            </el-card>
-          </el-col>
-          <el-col :span="12">
-            <el-card class="box-card">
-              <div slot="header" class="clearfix">
-                <el-form-item label="员工列表">
-                  <el-select v-model="productId" placeholder="请选择分组" @change="listenGetUserData">
-                    <el-option
-                      v-for="item in ztDeptInfo"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    />
-                  </el-select>
-                </el-form-item>
-              </div>
-              <template>
-                <el-table
-                  :data="userList"
-                  style="width: 100%"
-                  height="268"
-                  border
-                >
-                  <el-table-column
-                    prop="account"
-                    label="账号"
-                  />
-                  <el-table-column
-                    prop="role"
-                    label="角色"
-                  />
-                  <el-table-column
-                    prop="realname"
-                    label="姓名"
-                  />
-                  <el-table-column
-                    prop="email"
-                    label="邮箱"
-                    width="200px"
-                  />
-                </el-table>
-                <div class="block">
-                  <el-pagination
-                    :page-sizes="[10, 20, 50, 100]"
-                    :page-size="pageInfo.size"
-                    layout="sizes, prev, pager, next"
-                    :total="pageInfo.total"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                  />
+        </el-row>
+        <el-row :gutter="8" style="margin-bottom: 5px;">
+          <el-form>
+            <el-col :span="12">
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <span>人员分布</span>
                 </div>
-              </template>
-            </el-card>
-          </el-col>
-        </el-form>
-      </el-row>
+                <PieChart
+                  v-if="pieData.name!==undefined"
+                  :pie-data="pieData"
+                />
+              </el-card>
+            </el-col>
+            <el-col :span="12">
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <el-form-item label="员工列表">
+                    <el-select v-model="productId" placeholder="请选择分组" @change="listenGetUserData">
+                      <el-option
+                        v-for="item in ztDeptInfo"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </div>
+                <template>
+                  <el-table
+                    :data="userList"
+                    style="width: 100%"
+                    height="268"
+                    border
+                  >
+                    <el-table-column
+                      prop="account"
+                      label="账号"
+                    />
+                    <el-table-column
+                      prop="role"
+                      label="角色"
+                    />
+                    <el-table-column
+                      prop="realname"
+                      label="姓名"
+                    />
+                    <el-table-column
+                      prop="email"
+                      label="邮箱"
+                      width="200px"
+                    />
+                  </el-table>
+                  <div class="block">
+                    <el-pagination
+                      :page-sizes="[10, 20, 50, 100]"
+                      :page-size="pageInfo.size"
+                      layout="sizes, prev, pager, next"
+                      :total="pageInfo.total"
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                    />
+                  </div>
+                </template>
+              </el-card>
+            </el-col>
+          </el-form>
+        </el-row>
+      </el-col>
+      <el-col :span="12">
+        <SobnrDashboard />
+      </el-col>
       <el-row>
         <el-col :span="24" />
       </el-row>
@@ -172,6 +143,7 @@
 </template>
 
 <script>
+import { SobnrDashboard } from '@/components/Sonar/dashboard.vue'
 import { getDeptInfo } from '@/api/zentao/dept'
 import { getUserList, getUserRoleList } from '@/api/zentao/user'
 import { getZtProductList } from '@/api/zentao/product'
@@ -197,7 +169,8 @@ export default {
     'dataBox': dataBox,
     'DynamicDataSourceSelect': DynamicDataSourceSelect,
     'PieChart': PieChart,
-    'PieChart2': PieChart2
+    'PieChart2': PieChart2,
+    'SobnrDashboard': SobnrDashboard
   },
   // 数据字典
   dicts: ['task_status', 'bug_status'],
@@ -423,7 +396,6 @@ export default {
         this.getZtTaskInfo(projectId)
         this.getZtProjectCycle(projectId)
         this.getTaskTimeInfo(projectId)
-        this.getTaskInfo(projectId)
         this.getDataBox(this.projectId)
       })
     },
