@@ -61,82 +61,22 @@
       </el-col>
     </el-row>
     <el-row :gutter="8" style="margin-bottom: 5px;">
-      <!-- <el-form>
-        <el-col :span="12">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>人员分布</span>
-            </div>
-            <PieChart
-              v-if="pieData.name!==undefined"
-              :pie-data="pieData"
-            />
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <el-form-item label="员工列表">
-                <el-select v-model="productId" placeholder="请选择分组" @change="listenGetUserData">
-                  <el-option
-                    v-for="item in ztDeptInfo"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  />
-                </el-select>
-              </el-form-item>
-            </div>
-            <template>
-              <el-table
-                :data="userList"
-                style="width: 100%"
-                height="268"
-                border
-              >
-                <el-table-column
-                  prop="account"
-                  label="账号"
-                />
-                <el-table-column
-                  prop="role"
-                  label="角色"
-                />
-                <el-table-column
-                  prop="realname"
-                  label="姓名"
-                />
-                <el-table-column
-                  prop="email"
-                  label="邮箱"
-                  width="200px"
-                />
-              </el-table>
-              <div class="block">
-                <el-pagination
-                  :page-sizes="[10, 20, 50, 100]"
-                  :page-size="pageInfo.size"
-                  layout="sizes, prev, pager, next"
-                  :total="pageInfo.total"
-                  @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange"
-                />
-              </div>
-            </template>
-          </el-card>
-        </el-col>
-      </el-form> -->
+      <el-col :span="24">
+        <el-card class="box-card">
+          <BurnDept v-if="ztBurnDeptInfo != undefined || ztBurnDeptInfo != null" :pie-data="ztBurnDeptInfo" />
+        </el-card>
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import { SobnrDashboard } from '@/components/Sonar/dashboard.vue'
 import { getDeptInfo } from '@/api/zentao/dept'
 import { getUserList, getUserRoleList } from '@/api/zentao/user'
 import { getZtProductList } from '@/api/zentao/product'
 import { getZtProjectList, getProductProjectList, getZtProjectCycle } from '@/api/zentao/project'
 import { getBugInfo, getBugDataBox } from '@/api/zentao/bug'
+import { getZtBurnDept } from '@/api/zentao/burnDept'
 import {
   getTaskInfo,
   getZtTaskInfo,
@@ -147,8 +87,8 @@ import {
 import dataBox from '@/components/DataBox'
 import echartsPie from '@/components/Echarts/EchartsPie'
 import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
-import PieChart from '@/components/Echarts/PieChart'
 import PieChart2 from '@/components/Echarts/PieChart2'
+import BurnDept from '@/components/zentao/BurnDept'
 
 export default {
   name: 'Dashboard',
@@ -156,9 +96,8 @@ export default {
     'echartsPie': echartsPie,
     'dataBox': dataBox,
     'DynamicDataSourceSelect': DynamicDataSourceSelect,
-    'PieChart': PieChart,
     'PieChart2': PieChart2,
-    'SobnrDashboard': SobnrDashboard
+    'BurnDept': BurnDept
   },
   // 数据字典
   dicts: ['task_status', 'bug_status'],
@@ -235,6 +174,7 @@ export default {
       projectList: [],
       ztTaskInfo: [],
       ztDeptInfo: [],
+      ztBurnDeptInfo: {},
       taskTaskTimeInfo: [],
       pageInfo: {
         'pageNum': 1,
@@ -242,7 +182,8 @@ export default {
         'total': 100
       },
       form: {},
-      pieData: {}
+      pieData: {},
+      burnDept: {}
     }
   },
   computed: {
@@ -385,6 +326,7 @@ export default {
         this.getZtProjectCycle(projectId)
         this.getTaskTimeInfo(projectId)
         this.getDataBox(this.projectId)
+        this.getZtBurnDept(projectId)
       })
     },
     listenProject(projectId) {
@@ -394,6 +336,7 @@ export default {
       this.getTaskTimeInfo(projectId)
       this.getTaskInfo(projectId)
       this.getDataBox(projectId)
+      this.getZtBurnDept(projectId)
     },
     getBugInfo(projectId) {
       getBugInfo(projectId).then(res => {
@@ -423,6 +366,11 @@ export default {
     getDeptInfo() {
       getDeptInfo().then(res => {
         this.ztDeptInfo = res.content
+      })
+    },
+    getZtBurnDept(project) {
+      getZtBurnDept(project).then(res => {
+        this.ztBurnDeptInfo = res.content
       })
     }
   }
