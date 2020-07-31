@@ -1,8 +1,7 @@
 <template>
   <el-row :gutter="8">
-    <el-col :span="12">
-      <dataBox :option="dataBoxOption" />
-    </el-col>
+    <dataBox :option="dataBoxOption" />
+
   </el-row>
 </template>
 <script>
