@@ -35,10 +35,11 @@
         </el-collapse-item>
       </el-collapse>
       <el-row :gutter="8">
+        <el-col :span="12">
+          <dataBox :option="dataBoxOption" />
+        </el-col>
         <el-form>
-          <el-col :span="12">
-            <dataBox :option="dataBoxOption" />
-          </el-col>
+
           <el-col :span="6">
             <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
               <el-form-item label="Bug：">
@@ -304,7 +305,7 @@ export default {
     }
   },
   mounted() {
-    this.getDeptInfo()
+
   },
   methods: {
     changeDataSource() {
@@ -315,6 +316,7 @@ export default {
       this.getUserData(data1)
       this.drawLine()
       this.getZtProductList()
+      this.getDeptInfo()
     },
 
     getDataBox(projectId) {
@@ -324,12 +326,12 @@ export default {
       getBugDataBox(query).then(res => {
         this.bugDataBox = { ...res }
         this.bugDataBox.dict = this.dict.label.bug_status
-        this.bugDataBox.color = 'rgb(49, 180, 141)'
+        this.bugDataBox.color = '#E6A23C'
       })
       getTaskDataBox(query).then(res => {
         this.taskDataBox = { ...res }
         this.taskDataBox.dict = this.dict.label.task_status
-        this.taskDataBox.color = 'rgb(49, 180, 141)'
+        this.taskDataBox.color = '#409EFF'
       })
     },
     listenGetUserData(val) {

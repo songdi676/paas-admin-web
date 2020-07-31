@@ -29,13 +29,14 @@
                 :end="item.count"
               />
               <div class="data-box-title">{{ item.title }}</div>
-              <div v-for="(subItem,subIndex) in item.subData.slice(0, 2)" :key="subIndex+'sub'" class="info">
-                <span v-if="!item.dict">{{ subItem.title }}</span>
-                <span v-if="item.dict">{{ item.dict[subItem.title ] }}</span>
-                <span :style="{color:item.color}">{{ subItem.value }}</span>
+              <div style="    height:32px;">
+                <div v-for="(subItem,subIndex) in item.subData.slice(0, 2)" :key="subIndex+'sub'" class="info">
+                  <span v-if="!item.dict">{{ subItem.title }}</span>
+                  <span v-if="item.dict">{{ item.dict[subItem.title ] }}</span>
+                  <span :style="{color:item.color}">{{ subItem.value }}</span>
+                </div>
               </div>
-            </div>
-          </a>
+            </div></a>
         </div>
       </el-col>
     </el-row>
