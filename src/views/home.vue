@@ -35,10 +35,11 @@
         </el-collapse-item>
       </el-collapse>
       <el-row :gutter="8">
+        <el-col :span="12">
+          <dataBox :option="dataBoxOption" />
+        </el-col>
         <el-form>
-          <el-col :span="12">
-            <dataBox :option="dataBoxOption" />
-          </el-col>
+
           <el-col :span="6">
             <el-card class="box-card" style="height: 100px;margin-bottom: 5px;">
               <el-form-item label="Bug：">
