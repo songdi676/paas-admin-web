@@ -294,7 +294,7 @@ export default {
     }
   },
   mounted() {
-    this.getDeptInfo()
+
   },
   methods: {
     changeDataSource() {
@@ -302,10 +302,10 @@ export default {
         'params': this.userInfo,
         'pageInfo': this.pageInfo
       }
-
       this.getUserData(data1)
       this.drawLine()
       this.getZtProductList()
+      this.getDeptInfo()
     },
 
     getDataBox(projectId) {
@@ -315,12 +315,12 @@ export default {
       getBugDataBox(query).then(res => {
         this.bugDataBox = { ...res }
         this.bugDataBox.dict = this.dict.label.bug_status
-        this.bugDataBox.color = 'rgb(49, 180, 141)'
+        this.bugDataBox.color = '#E6A23C'
       })
       getTaskDataBox(query).then(res => {
         this.taskDataBox = { ...res }
         this.taskDataBox.dict = this.dict.label.task_status
-        this.taskDataBox.color = 'rgb(49, 180, 141)'
+        this.taskDataBox.color = '#409EFF'
       })
     },
     listenGetUserData(val) {
