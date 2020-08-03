@@ -5,6 +5,16 @@
         <el-col :span="8">
           <DynamicDataSourceSelect system="sonar" @changeDataSource="changeDataSource" />
         </el-col>
+        <el-col :span="8">
+          <el-select v-model="projectuuid" placeholder="请选择项目" @change="changeProject">
+            <el-option
+              v-for="item in sonarProjectList"
+              :key="item.uuid"
+              :label="item.longName"
+              :value="item.uuid"
+            />
+          </el-select>
+        </el-col>
 
       </el-collapse-item>
     </el-collapse>
@@ -18,6 +28,9 @@
 <script>
 import dataBox from '@/components/DataBox'
 import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
+import { getProjectMeasuresBoxes } from '@/api/sonar/project-measures'
+import { getProjectList } from '@/api/sonar/project'
+
 export default {
   name: 'SonarDashboard',
   components: {
@@ -33,6 +46,13 @@ export default {
   data() {
     return {
       configTitle: '选择数据库',
+      sonarProjectList: [],
+      projectuuid: '',
+      dataBoxList: [],
+      dataBoxOption: {
+        span: 6,
+        data: []
+      },
       codeSmellDataBox: {
         title: 'Sonar异味',
         count: 12332,
@@ -68,14 +88,7 @@ export default {
     }
   },
   computed: {
-    // 仅读取
-    dataBoxOption: function() {
-      var dataBoxOption = {
-        span: 6,
-        data: [this.codeSmellDataBox, this.debtDataBox, this.codelineDataBox, this.bugDataBox]
-      }
-      return dataBoxOption
-    }
+
   },
 
   created() {
@@ -83,7 +96,19 @@ export default {
   },
 
   methods: {
-
+    changeDataSource() {
+      const project = { scope: 'PRJ' }
+      getProjectList(project).then(res => {
+        this.projectuuid = res[0].uuid
+        this.sonarProjectList = res
+        this.changeProject(res[0].uuid)
+      })
+    },
+    changeProject(uuid) {
+      this.projectuuid = uuid
+      const projectMeasures = { componentUuid: this.projectuuid }
+      getProjectMeasuresBoxes(projectMeasures).then(res => { this.dataBoxOption.data = res })
+    }
   }
 }
 </script>
