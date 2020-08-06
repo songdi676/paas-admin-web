@@ -33,6 +33,13 @@ module.exports = {
           '^/api': 'api'
         }
       },
+      '/proxy': {
+        target: '10.1.8.8:8088',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/proxy': ''
+        }
+      },
       '/auth': {
         target: process.env.VUE_APP_BASE_API,
         changeOrigin: true,

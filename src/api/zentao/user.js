@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import qs from 'qs'
 export function getUserList(data) {
   return request({
     url: 'zentao/getUserList',
@@ -14,5 +14,10 @@ export function getUserRoleList() {
     method: 'post'
   })
 }
-
-export default { getUserList, getUserRoleList }
+export function getUserWorkInfoChart(userWorkInfo) {
+  return request({
+    url: '/zentao/user/chart' + '?' + qs.stringify(userWorkInfo, { indices: false }),
+    method: 'get'
+  })
+}
+export default { getUserList, getUserRoleList, getUserWorkInfoChart }

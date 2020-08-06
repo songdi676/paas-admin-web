@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <dv-full-screen-container>
     <el-collapse>
       <el-collapse-item :title="configTitle" name="1">
         <el-form>
@@ -84,7 +84,7 @@
         </el-card>
       </el-col>
     </el-row>
-  </div>
+  </dv-full-screen-container>
 </template>
 
 <script>

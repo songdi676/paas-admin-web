@@ -10,6 +10,11 @@ export const constantRouterMap = [
     component: (resolve) => require(['@/views/login'], resolve),
     hidden: true
   },
+  { path: '/zentao/dashboard-fullscreen',
+    meta: { title: '禅道', noCache: true },
+    component: (resolve) => require(['@/views/zentao/dashboard-fullscreen'], resolve),
+    hidden: true
+  },
   {
     path: '/404',
     component: (resolve) => require(['@/views/features/404'], resolve),

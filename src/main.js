@@ -8,6 +8,10 @@ import Element from 'element-ui'
 import Avue from '@smallwei/avue'
 import '@smallwei/avue/lib/index.css'
 Vue.use(Avue)
+
+import DataV from '@jiaminghi/data-view'
+
+Vue.use(DataV)
 //
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'

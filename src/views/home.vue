@@ -1,5 +1,6 @@
 <template>
   <div class="dashboard-container">
+    <el-button type="primary" plain @click="goto">大屏监控</el-button>
     <div class="dashboard-editor-container">
       <el-row
         :gutter="8"
@@ -15,7 +16,7 @@
         </el-col>
       </el-row>
     </div>
-    <el-backtop target=".page-component__scroll .el-scrollbar__wrap" :visibility-height="0" :bottom="100">
+    <el-backtop target=".page-component__scroll .el-scrollbar__wrap" :visibility-height="1" :bottom="100">
       <div
         style="{
         height: 100%;
@@ -54,7 +55,9 @@ export default {
 
   },
   methods: {
-
+    goto() {
+      this.$router.push({ path: '/zentao/dashboard-fullscreen' })
+    }
   }
 }
 </script>
