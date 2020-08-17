@@ -20,4 +20,10 @@ export function getUserWorkInfoChart(userWorkInfo) {
     method: 'get'
   })
 }
-export default { getUserList, getUserRoleList, getUserWorkInfoChart }
+export function getUserWorkInfo(userWorkInfo) {
+  return request({
+    url: '/zentao/user/work-info' + '?' + qs.stringify(userWorkInfo, { indices: false }),
+    method: 'get'
+  })
+}
+export default { getUserList, getUserRoleList, getUserWorkInfoChart, getUserWorkInfo }

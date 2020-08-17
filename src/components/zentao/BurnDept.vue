@@ -43,7 +43,7 @@ export default {
       if (this.chart) {
         this.chart.resize()
       }
-    }, 100)
+    }, '100%')
     window.addEventListener('resize', this.__resizeHandler)
   },
   beforeDestroy() {
@@ -60,7 +60,6 @@ export default {
 
       this.chart.setOption({
         title: {
-          text: '项目燃尽图'
         },
         tooltip: {
           trigger: 'axis'

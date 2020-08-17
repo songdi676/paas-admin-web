@@ -9,6 +9,11 @@ import screenfull from 'screenfull'
 
 export default {
   name: 'Screenfull',
+  props: {
+    element: {
+      type: String,
+      default: null
+    }},
   data() {
     return {
       isFullscreen: false
@@ -28,8 +33,12 @@ export default {
           type: 'warning'
         })
         return false
+      } if (this.element) {
+        const elements = document.getElementById(this.element)
+        screenfull.request(elements)
+      } else {
+        screenfull.toggle()
       }
-      screenfull.toggle()
     },
     change() {
       this.isFullscreen = screenfull.isFullscreen

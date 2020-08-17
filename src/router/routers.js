@@ -11,8 +11,9 @@ export const constantRouterMap = [
     hidden: true
   },
   { path: '/zentao/dashboard-fullscreen',
-    meta: { title: '禅道', noCache: true },
+    name: 'Dashboard-Full',
     component: (resolve) => require(['@/views/zentao/dashboard-fullscreen'], resolve),
+    meta: { title: '禅道', icon: 'index', affix: true, noCache: true },
     hidden: true
   },
   {

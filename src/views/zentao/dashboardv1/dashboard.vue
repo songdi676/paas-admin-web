@@ -1,99 +1,79 @@
 <template>
-  <dv-full-screen-container>
+  <div>
+    <productAndProjectSelect />
 
-    <el-collapse>
-      <el-collapse-item :title="configTitle" name="1">
-        <el-form>
-          <el-col :span="8">
-            <DynamicDataSourceSelect system="zentao" @changeDataSource="changeDataSource" />
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="产品">
-              <el-select v-model="productId" placeholder="请选择产品" @change="getProductProjectList">
-                <el-option
-                  v-for="item in productList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="迭代">
-              <el-select v-model="projectId" placeholder="请选择迭代" @change="listenProject">
-                <el-option
-                  v-for="item in projectList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-form>
-      </el-collapse-item>
-    </el-collapse>
-    <el-row :gutter="8">
-      <dataBox :option="dataBoxOption" />
-    </el-row>
-    <el-row :gutter="8">
-      <el-col :span="12" style="margin-bottom: 5px;">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>迭代周期：{{ projectCycle.begin+'~'+projectCycle.end }}</span>
+    <projectOverview :total-people="0" :task-amount="taskDataBox.count" :total-work-time="timeDataBox.count" :bug-amount="bugDataBox.count" />
+
+    <el-carousel
+      :autoplay="false"
+      style="width:92%; height:950px; background-color: #021232;"
+      indicator-position="none"
+      arrow="always"
+    >
+      <el-carousel-item style="width:95%; height:950px; margin-left: 53px;">
+        <div class="carouselItem">
+          <div class="itemName">项目工时数据</div>
+
+          <BurnDept :pie-data="ztBurnDeptInfo" />
+
+          <div class="one">
+            <groupSelect :project="projectId" />
+
           </div>
-          <echartsPie
-            v-if="taskTaskTimeInfo.name!==undefined"
-            :pie-data="taskTaskTimeInfo"
-          />
-        </el-card>
-      </el-col>
-      <el-col :span="12" style="margin-bottom: 5px;">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>任务情况</span>
-          </div>
-          <PieChart2
-            v-if="ztTaskInfo !== undefined || ztTaskInfo !== null"
-            :pie-data="ztTaskInfo"
-          />
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row :gutter="8" style="margin-bottom: 5px;">
-      <el-col :span="24">
-        <el-card class="box-card">
-          <BurnDept v-if="ztBurnDeptInfo != undefined || ztBurnDeptInfo != null" :pie-data="ztBurnDeptInfo" />
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row :gutter="8" style="margin-bottom: 5px;">
-      <el-col :span="24">
-        <el-card class="box-card">
-          <el-carousel :interval="5000" arrow="hover" trigger="click" :autoplay="false" indicator-position="outside">
-            <el-carousel-item>
-              <UserBarChart :project="projectId" category="工时" />
-            </el-carousel-item>
-            <el-carousel-item>
-              <UserBarChart :project="projectId" category="Bug" />
-            </el-carousel-item>
-            <el-carousel-item>
-              <UserBarChart :project="projectId" category="任务数" />
-            </el-carousel-item>
-          </el-carousel>
-        </el-card>
-      </el-col>
-    </el-row>
-  </dv-full-screen-container>
+          <span class="one">
+            <TaskEstimateLine :project="projectId" />
+            <overviewManHours :project="projectId" team="三" dept="5" />
+          </span>
+        </div>
+      </el-carousel-item>
+
+      <el-carousel-item style="width:95%; height:950px;margin-left: 53px;">
+
+        <div class="carouselItem">
+          <div class="itemName">项目BUG数据</div>
+          <span class="one">
+            <UserBarChart :project="projectId" category="Bug" />
+          </span>
+          <span class="one">
+            <BugPieChart :project="projectId" text="Bug状态" category="status" />
+            <BugPieChart :project="projectId" text="Bug状态类型" category="type" />
+            <BugPieChart :project="projectId" text="Bug级别" category="severit" />
+            <bugMatter />
+          </span>
+        </div>
+      </el-carousel-item>
+
+      <el-carousel-item style="width:95%; height:950px;margin-left: 53px;">
+        <div class="carouselItem">
+          <div class="itemName">项目任务数据</div>
+          <span class="one">
+            <UserBarChart :project="projectId" category="任务数" />
+          </span>
+
+          <span class="one">
+            <!-- <taskLevel></taskLevel> -->
+            <taskType />
+            <!-- <taskMatter></taskMatter> -->
+            <taskDetail />
+          </span>
+        </div>
+      </el-carousel-item>
+
+    </el-carousel>
+
+  </div>
 </template>
 
 <script>
+import productAndProjectSelect from '@/views/zentao/dashboardv1/productAndProjectSelect'
+import projectOverview from '@/views/zentao/dashboardv1/projectOverview'
+import groupSelect from '@/views/zentao/dashboardv1/groupSelect'
+import overviewManHours from '@/views/zentao/dashboardv1/overviewManHours'
 import { getDeptInfo } from '@/api/zentao/dept'
 import { getUserList, getUserRoleList } from '@/api/zentao/user'
 import { getZtProductList } from '@/api/zentao/product'
 import { getZtProjectList, getProductProjectList, getZtProjectCycle } from '@/api/zentao/project'
-import { getBugInfo, getBugDataBox } from '@/api/zentao/bug'
+import { getBugInfo, getBugDataBox, getBugPieChar } from '@/api/zentao/bug'
 import { getZtBurnDept } from '@/api/zentao/burnDept'
 import {
   getTaskInfo,
@@ -101,14 +81,15 @@ import {
   getTaskTimeInfo,
   getTaskDataBox
 } from '@/api/zentao/task'
-import productAndProjectSelect from '@/views/zentao/dashboardv1/productAndProjectSelect'
+
 import dataBox from '@/components/DataBox'
 import echartsPie from '@/components/Echarts/EchartsPie'
 import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
 import PieChart2 from '@/components/Echarts/PieChart2'
 import BurnDept from '@/components/zentao/BurnDept'
 import UserBarChart from '@/components/zentao/UserBarChart'
-
+import TaskEstimateLine from '@/components/zentao/TaskEstimateLine'
+import BugPieChart from '@/components/zentao/BugPieChart'
 export default {
   name: 'Dashboard',
   components: {
@@ -118,7 +99,12 @@ export default {
     'PieChart2': PieChart2,
     'BurnDept': BurnDept,
     'UserBarChart': UserBarChart,
-    'productAndProjectSelect': productAndProjectSelect
+    'productAndProjectSelect': productAndProjectSelect,
+    'projectOverview': projectOverview,
+    'groupSelect': groupSelect,
+    'TaskEstimateLine': TaskEstimateLine,
+    'overviewManHours': overviewManHours,
+    'BugPieChart': BugPieChart
   },
   // 数据字典
   dicts: ['task_status', 'bug_status'],
@@ -132,6 +118,7 @@ export default {
         showIcon: false,
         icon: 'el-icon-warning',
         color: 'rgb(49, 180, 141)',
+        background: 'rgb(49, 180, 141)',
         subData: [{
           title: '较昨日',
           value: '+12'
@@ -228,7 +215,11 @@ export default {
     }
   },
   mounted() {
-
+    this.$eventBus.$on('projectChange', project => {
+      this.projectId = project
+      this.getDataBox(project)
+      this.getZtBurnDept(project)
+    })
   },
   methods: {
     changeDataSource() {
@@ -399,6 +390,47 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .one{
+    display: flex;
+    flex-direction: row;
+
+  }
+  #main{
+    padding-top: 0px;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 4%;
+    background: #021232;
+    /* margin : 10%; */
+  }
+  .itemName {
+    width: 100%;
+    background-image: linear-gradient(180deg, #02215E 14%, #082D78 100%);
+    font-family: PingFangSC-Semibold;
+    font-size: 24px;
+    color: #00A6FF;
+    letter-spacing: 0;
+    text-align: center;
+    height: 50px;
+    margin-bottom: 12px;
+    padding-top: 7px;
+    /* margin-left: 80px; */
+  }
+button.el-carousel__arrow.el-carousel__arrow--left{
+  left: 1%;
+  font-size: 50px;
+  height: 40px;
+  width: 40px;
+  color: #32C5FF;
+ }
+button.el-carousel__arrow.el-carousel__arrow--right {
+  right: -0.5%;
+  font-size: 50px;
+  height: 40px;
+  width: 40px;
+  z-index: 10;
+  color: #32C5FF;
+ }
   .dashboard-editor-container {
     padding: 32px;
     background-color: rgb(240, 242, 245);

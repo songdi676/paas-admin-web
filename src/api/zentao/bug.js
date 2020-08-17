@@ -8,6 +8,13 @@ export function getBugList(zttask) {
   })
 }
 
+export function getBugPieChar(zttask) {
+  return request({
+    url: '/zentao/bug/pie-char' + '?' + qs.stringify(zttask, { indices: false }),
+    method: 'get'
+  })
+}
+
 export function getBugStatus(zttask) {
   return request({
     url: '/zentao/bug/status' + '?' + qs.stringify(zttask, { indices: false }),
@@ -28,4 +35,4 @@ export function getBugInfo(projectId) {
   })
 }
 
-export default { getBugInfo, getBugStatus, getBugList, getBugDataBox }
+export default { getBugInfo, getBugStatus, getBugList, getBugDataBox, getBugPieChar }

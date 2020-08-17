@@ -2,24 +2,24 @@
   <div class="PPSelect">
     <div style="display: inline-block;margin-right: 20px;font-size: 20px">数据库</div>
     <DynamicDataSourceSelect system="zentao" @changeDataSource="changeDataSource" />
-    <div style="display: inline-block;margin-right: 20px;font-size: 20px">Product</div>
+    <div style="display: inline-block;margin-right: 20px;margin-left: 20px;font-size: 20px">Product</div>
     <el-select v-model="valueProduct" placeholder="请选择" size="mini" popper-class="selectMode" @change="productChange">
       <el-option
         v-for="item in optionsProduct"
-        :key="item.value"
+        :key="item.id"
         class="selectOption"
-        :label="item.label"
-        :value="item.value"
+        :label="item.name"
+        :value="item.id"
       />
     </el-select>
     <div style="display: inline-block;margin-right: 20px;margin-left: 20px;font-size: 20px">Project</div>
     <el-select v-model="valueProject" placeholder="请选择" size="mini" popper-class="selectMode" @change="projectChange">
       <el-option
         v-for="item in optionsProject"
-        :key="item.value"
+        :key="item.id"
         class="selectOption"
-        :label="item.label"
-        :value="item.value"
+        :label="item.name"
+        :value="item.id"
       />
     </el-select>
     <div id="title">禅道工时</div>
@@ -30,13 +30,17 @@
 <script>
 import { getZtProductList } from '@/api/zentao/product'
 import { getProductProjectList } from '@/api/zentao/project'
+import DynamicDataSourceSelect from '@/components/DynamicDataSourceSelect'
 
 export default {
   name: 'ProductAndProjectSelect',
+  components: {
+    'DynamicDataSourceSelect': DynamicDataSourceSelect
+  },
   data() {
     return {
       optionsProduct: [],
-      valueProduct: '虎踞云',
+      valueProduct: '',
       optionsProject: [],
       valueProject: ''
     }

@@ -4,19 +4,15 @@
 
 <script>
 import echarts from 'echarts'
+
 require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
-import { getUserWorkInfoChart } from '@/api/zentao/user'
-
+import { getTaskEestimate } from '@/api/zentao/dept'
 export default {
   props: {
     project: {
       type: Number,
-      default: 0
-    },
-    category: {
-      type: String,
-      default: '工时'
+      required: true
     },
     className: {
       type: String,
@@ -60,34 +56,32 @@ export default {
   },
   methods: {
     initChart() {
+      this.chart = echarts.init(this.$el, 'macarons')
       if (!this.project) {
         return
       }
-      this.chart = echarts.init(this.$el, 'macarons')
-      getUserWorkInfoChart({ project: this.project, category: this.category }).then(rs => {
+      getTaskEestimate(this.project).then(r => {
+        const areaStyle = { // 区域填充样式
+          normal: {
+            opacity: 0.35,
+            color: 'green'
+          }
+        }
         this.chart.setOption({
           title: {
-            text: this.category
           },
           tooltip: {
             trigger: 'axis'
           },
           legend: {
-            data: rs.legend
+            data: r.legend
           },
-          dataZoom: [
-            {
-              show: true,
-              type: 'slider',
-              start: 0,
-              end: 100
-            },
-            {
-              type: 'inside',
-              start: 0,
-              end: 100
-            }
-          ],
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
           toolbox: {
             feature: {
               saveAsImage: {}
@@ -96,15 +90,12 @@ export default {
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: rs.xAxis
+            data: r.xAxis
           },
-          yAxis: [{
-            type: 'value',
-            axisTick: {
-              show: false
-            }
-          }],
-          series: rs.series
+          yAxis: {
+            type: 'value'
+          },
+          series: r.series
         })
       })
     }
