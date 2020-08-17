@@ -33,6 +33,7 @@
     "url": "https://github.com/elunez/eladmin/issues"
   },
   "dependencies": {
+    "@jiaminghi/data-view": "^2.9.6",
     "@riophae/vue-treeselect": "0.1.0",
     "@smallwei/avue": "^2.6.14",
     "axios": "0.18.1",
